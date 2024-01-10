@@ -1,5 +1,6 @@
 package com.example.javaspringlearn;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class AppControllers {
     @Autowired
+    private ProductsService productsService;
+    @Autowired
+    private CategoriesService categoriesService;
+    @Autowired
     private UsersService userService;
 
     @GetMapping("/")
@@ -30,6 +35,34 @@ public class AppControllers {
     @GetMapping("/home")
     public String viewHomePage() {
         return "home";
+    }
+
+    @GetMapping("/store")
+    public String viewStorePage(Model model) {
+        Products product = new Products();
+        ProductData productData = new ProductData();
+        ArrayList<ProductData> productDataList = new ArrayList<>();
+        List<Products> listProducts = productsService.listAll();
+        for (int i = 0; i < listProducts.size(); i++) {
+            Long id = listProducts.get(i).getId();
+            productData.setId(id);
+            productData.setName(listProducts.get(i).getName());
+            productData.setCategory(listProducts.get(i).getCategory());
+            productData.setDateCreate(listProducts.get(i).getDateCreate());
+            productData.setActualQuant(productsService.getActualQuant(id));
+            productDataList.add(i, productData);
+        }
+        List<Categories> listCategories = categoriesService.listAll();
+        model.addAttribute("product", product);
+        model.addAttribute("listProducts", productDataList);
+        model.addAttribute("listCategories", listCategories);
+        return "store";
+    }
+
+    @PostMapping("/save-product")
+    public String saveProduct(@ModelAttribute("product") Products product) {
+        productsService.save(product);
+        return "redirect:store";
     }
 
     @GetMapping("/users/{page}")
@@ -71,5 +104,17 @@ public class AppControllers {
     public ResponseEntity<HttpStatus> deleteUser(Model model, @PathVariable(name="id") Long id) {
         userService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/increase-quant")
+    public String increaseQuant(@ModelAttribute("user") Users user) {
+        userService.save(user);
+        return "redirect:users/1";
+    }
+
+    @PostMapping("/reduce-quant")
+    public String reduceQuant(@ModelAttribute("user") Users user) {
+        userService.save(user);
+        return "redirect:users/1";
     }
 }

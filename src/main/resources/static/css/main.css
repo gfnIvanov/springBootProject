@@ -2,11 +2,11 @@
     font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
     font-weight: 400;
-  
+
     color-scheme: light dark;
     color: rgba(255, 255, 255, 0.87);
     background-color: #242424;
-  
+
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -23,19 +23,19 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
     outline: none;
 }
 
-html { 
-    height: 101%; 
+html {
+    height: 101%;
 }
 
 body {
     overflow: hidden;
 }
 
-article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section { 
-    display: block; 
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+    display: block;
 }
-ol, ul { 
-    list-style: none; 
+ol, ul {
+    list-style: none;
 }
 
 h1 {
@@ -44,7 +44,7 @@ h1 {
     margin-bottom: 10px;
 }
 
-input {
+input, select {
     width: 200px;
     height: 30px;
     padding: 0px 5px 0px;
@@ -53,6 +53,11 @@ input {
     border: 1px solid #4CAF50;
     color: white;
     margin: 5px 5px 0px 0px;
+}
+
+select {
+    height: 32px;
+    color: #999;;
 }
 
 button {
@@ -71,6 +76,10 @@ button {
     height: 100%;
 }
 
+[class$="-frame"] {
+    margin: 20px;
+}
+
 .main-form {
     position: absolute;
     width: 100%;
@@ -87,7 +96,7 @@ button {
     min-height: 500px;
     border-right: 2px solid #4CAF50;
     z-index: 1;
-    top: 0; 
+    top: 0;
     left: 0;
     overflow-x: hidden;
     transition: all 0.25s;
@@ -124,7 +133,7 @@ button {
 .menu-item {
     width: 70%;
     margin: 10px;
-    padding: 15px 32px; 
+    padding: 15px 32px;
 }
 
 .menu-item-mini {
@@ -142,8 +151,8 @@ button {
 }
 
 .btn-green {
-    background-color: #4CAF50;   
-    color: white; 
+    background-color: #4CAF50;
+    color: white;
 }
 
 .sidebar-arrow {
@@ -157,4 +166,8 @@ button {
 
 .mt-5 {
     margin-top: 5px;
+}
+
+.action-btn-block div {
+    position: relative;
 }

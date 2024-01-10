@@ -5,25 +5,28 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/main.css}"/>
-    <link rel="stylesheet" th:href="@{/css/users.css}"/>
+    <link rel="stylesheet" th:href="@{/css/grid.css}"/>
+    <link rel="stylesheet" th:href="@{/css/modal.css}"/>
     <script type="text/javascript" th:src="@{/scripts/users.js}"></script>
+    <script type="text/javascript" th:src="@{/scripts/form.js}"></script>
+    <script type="text/javascript" th:src="@{/scripts/modal.js}"></script>
 </head>
 <body>
-    <div class="users">
-        <div class="users-flex" style="justify-content:space-between;">
+    <div class="users-frame">
+        <div class="grid-flex" style="justify-content:space-between;">
             <h1>Пользователи системы</h1>
             <div class="add-btn button" style="align-self:end;" onclick="showAddForm(true);">
                 <img th:src="@{/images/add.png}" alt="arrow" width="40px" height="40px"/>
             </div>
         </div>
-        <div class="add-user-form" style="display:none;">
-            <form id="add-user-form" action="#" th:action="@{/save-user}" th:object="${user}" method="post">
-                <div class="users-flex">
+        <div class="add-form" style="display:none;">
+            <form id="add-form" action="#" th:action="@{/save-user}" th:object="${user}" method="post">
+                <div class="grid-flex">
                     <input type="text" th:field="*{login}" placeholder="Логин" onblur="unRequired(this);"/>
                     <input type="text" th:field="*{firstname}" placeholder="Имя" onblur="unRequired(this);"/>
                     <input type="text" th:field="*{lastname}" placeholder="Фамилия" onblur="unRequired(this);"/>
                     <input type="password" th:field="*{password}" placeholder="Пароль" onblur="unRequired(this);"/>
-                    <div class="users-flex">
+                    <div class="grid-flex">
                         <button type="submit" class="button pos-center">
                             <img th:src="@{/images/check.png}" alt="arrow" width="29px" height="29px"/>
                         </button>
@@ -32,9 +35,9 @@
                         </div>
                     </div>
                 </div>
-            </form>   
+            </form>
         </div>
-        <div class="user-row bold">
+        <div class="grid-row bold">
             <div>Логин</div>
             <div>Имя</div>
             <div>Фамилия</div>
@@ -42,37 +45,37 @@
             <div>Действия</div>
         </div>
         <div class="list-users" th:each="user: ${listUsers}">
-            <div class="user-row users-flex">
+            <div class="grid-row grid-flex">
                 <div th:text="${user.id}" style="display:none;"></div>
                 <div th:text="${user.login}"></div>
                 <div th:text="${user.firstname}"></div>
                 <div th:text="${user.lastname}"></div>
                 <div th:text="${user.dateCreate}"></div>
                 <div>
-                    <div class="button" onclick="showModal(this, true);">
+                    <div class="button" onclick="showModal(this, true);" title="Редактировать пользователя">
                         <img class="mt-5" th:src="@{/images/edit.png}" alt="arrow" width="30px" height="30px"/>
                     </div>
-                    <div class="button" onclick="showModal(this, true, true);">
+                    <div class="button" onclick="showModal(this, true, true);" title="Удалить пользователя">
                         <img class="mt-5" th:src="@{/images/close.png}" alt="arrow" width="30px" height="30px"/>
                     </div>
                 </div>
             </div>
         </div>
         <div class="mt-5" style="text-align:center;" th:text="${nousers}"></div>
-        <div class="users-flex" style="justify-content:center;">
+        <div class="grid-flex" style="justify-content:center;">
             <div th:each="page: ${pages}" class="button page-btn" th:classappend="${page.active}" th:text="${page.num}" onclick="changePage(this);"></div>
         </div>
     </div>
     <div id="modal-edit" class="modal-mask" style="display:none;">
-        <div class="edit-user-modal">
+        <div class="edit-modal">
             <form id="edit-user-form" action="#" th:action="@{/save-user}" th:object="${user}" method="post">
-                <div class="users-flex">
+                <div class="modal-flex">
                     <input th:field="*{id}" style="display:none;"/>
                     <input type="text" th:field="*{login}" placeholder="Логин" onblur="unRequired(this);"/>
                     <input type="text" th:field="*{firstname}" placeholder="Имя" onblur="unRequired(this);"/>
                     <input type="text" th:field="*{lastname}" placeholder="Фамилия" onblur="unRequired(this);"/>
                     <input type="password" th:field="*{password}" placeholder="Пароль" onblur="unRequired(this);"/>
-                    <div class="users-flex">
+                    <div class="modal-flex">
                         <button type="submit" class="button pos-center">
                             <img th:src="@{/images/check.png}" alt="arrow" width="29px" height="29px"/>
                         </button>
@@ -85,10 +88,10 @@
         </div>
     </div>
     <div id="modal-del" class="modal-mask" style="display:none;">
-        <div class="edit-user-modal">
+        <div class="edit-modal">
             <div id="id-block" style="display:none;"></div>
             <div>Вы действительно хотите удалить пользователя?</div>
-            <div class="users-flex mt-5" style="justify-content:center;">
+            <div class="modal-flex mt-5" style="justify-content:center;">
                 <div class="button" style="align-self:center;" onclick="deleteUser(this);">
                     <img th:src="@{/images/check.png}" alt="arrow" width="28px" height="28px"/>
                 </div>
