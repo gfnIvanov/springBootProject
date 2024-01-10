@@ -35,7 +35,7 @@ public class Users {
         return login; 
     }
 
-    public void setLogin(String login) throws Exception { 
+    public void setLogin(String login) { 
         this.login = login;
     }
 

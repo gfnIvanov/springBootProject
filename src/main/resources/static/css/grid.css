@@ -1,0 +1,49 @@
+.grid-flex {
+    display: flex;
+}
+
+.grid-list {
+    width: 100%;
+}
+
+.grid-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.grid-row > div {
+    width: 100%;
+    padding: 5px;
+    text-align: center;
+    align-self: end;
+    border-bottom: 1px solid #4CAF50;
+}
+
+.grid-row > div:last-child {
+    width: 50%;
+}
+
+.bold div {
+    font-weight: bold;
+}
+
+.required {
+    border: 1px solid red;
+}
+
+.pos-center {
+    padding: 0;
+    align-self: center;
+}
+
+.page-btn {
+    width: 30px;
+    height: 25px;
+    margin: 5px;
+    border: 1px solid #4CAF50;
+    background-color: #242424;
+}
+
+.active {
+    background-color: #4CAF50;
+}
