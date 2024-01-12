@@ -39,7 +39,6 @@ public class AppControllers {
 
     @GetMapping("/store")
     public String viewStorePage(Model model) {
-        Products product = new Products();
         ProductData productData = new ProductData();
         ArrayList<ProductData> productDataList = new ArrayList<>();
         List<Products> listProducts = productsService.listAll();
@@ -53,15 +52,20 @@ public class AppControllers {
             productDataList.add(i, productData);
         }
         List<Categories> listCategories = categoriesService.listAll();
-        model.addAttribute("product", product);
+        model.addAttribute("product", new Products());
+        model.addAttribute("productForm", new ProductForm());
         model.addAttribute("listProducts", productDataList);
         model.addAttribute("listCategories", listCategories);
         return "store";
     }
 
     @PostMapping("/save-product")
-    public String saveProduct(@ModelAttribute("product") Products product) {
-        productsService.save(product);
+    public String saveProduct(@ModelAttribute("productForm") ProductForm productForm) {
+        System.out.println(productForm.getCategoryId());
+        Products product = new Products();
+        product.setName(productForm.getProductName());
+        //product.setCategory(categoriesService.get(productForm.getCategoryId()));
+        //productsService.save(product);
         return "redirect:store";
     }
 
