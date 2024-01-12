@@ -12,17 +12,19 @@ const setInputColor = function(select) {
     select.style.color = color;
 };
 
-const showModal = function(dom, show, reduce) {
-    if (reduce) {
-        const modalReduce = document.getElementById('modal-reduce');
-        modalReduce.style.display = show ? '' : 'none';
+const showModal = function(dom, show, type) {
+    if (type === 'del') {
+        const modalDel = document.getElementById('modal-del');
+        modalDel.style.display = show ? '' : 'none';
         if (show) {
             const str = dom.parentNode.parentNode;
+            const idBlock = modalDel.querySelector('[id="id-block"]');
+            idBlock.innerText = str.children[0].innerText;
         }
         return;
     }
-    const modalIncrease = document.getElementById('modal-increase');
-    modalIncrease.style.display = show ? '' : 'none';
+    const modal = document.getElementById(`modal-${type}`);
+    modal.style.display = show ? '' : 'none';
     if (show) {
         const str = dom.parentNode.parentNode;
         increaseForm[0].value = str.children[0].innerText;

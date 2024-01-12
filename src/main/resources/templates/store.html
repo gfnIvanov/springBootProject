@@ -20,12 +20,12 @@
             </div>
         </div>
         <div class="add-form" style="display:none;">
-            <form id="add-form" action="#" th:action="@{/save-product}" th:object="${product}" method="post">
+            <form id="add-form" action="#" th:action="@{/save-product}" th:object="${productForm}" method="post">
                 <div class="grid-flex">
-                    <input type="text" th:field="*{name}" placeholder="Наименование" onblur="unRequired(this);"/>
-                    <select th:field="*{category}" placeholder="Категория" onchange="unRequired(this); setInputColor(this);">
+                    <input type="text" th:field="*{productName}" placeholder="Наименование" onblur="unRequired(this);"/>
+                    <select th:field="*{categoryId}" placeholder="Категория" onchange="unRequired(this); setInputColor(this);">
                         <option value="" hidden>Категория</option>
-                        <option th:each="category: ${listCategories}" th:value="${category}" th:text="${category.name}"></option>
+                        <option th:each="category: ${listCategories}" th:value="${category.id}" th:text="${category.name}"></option>
                     </select>
                     <div class="grid-flex">
                         <button type="submit" class="button pos-center">
@@ -53,13 +53,13 @@
                 <div th:text="${product.dateCreate}"></div>
                 <div th:text="${product.actualQuant}"></div>
                 <div class="action-btn-block">
-                    <div class="button" onclick="showModal(this, true);" title="Добавить товар" style="top: 0px">
+                    <div class="button" onclick="showModal(this, true, 'increase');" title="Добавить товар" style="top: 0.3px">
                         <img class="mt-5" th:src="@{/images/add.png}" alt="arrow" width="27px" height="27px"/>
                     </div>
-                    <div class="button" onclick="showModal(this, true, true);" title="Списать товар" style="top: -2px">
+                    <div class="button" onclick="showModal(this, true, 'reduce');" title="Списать товар" style="top: -2.5px">
                         <img class="mt-5" th:src="@{/images/square.png}" alt="arrow" width="22px" height="22px"/>
                     </div>
-                    <div class="button" onclick="showModal(this, true, true);" title="Удалить товар" style="top: 2.5px">
+                    <div class="button" onclick="showModal(this, true, 'del');" title="Удалить товар" style="top: 2px">
                         <img class="mt-5" th:src="@{/images/close.png}" alt="arrow" width="31px" height="31px"/>
                     </div>
                 </div>
@@ -77,7 +77,7 @@
                         <button type="submit" class="button pos-center">
                             <img th:src="@{/images/check.png}" alt="arrow" width="29px" height="29px"/>
                         </button>
-                        <div class="button" onclick="showModal(false);">
+                        <div class="button" onclick="showModal(this, false, 'increase');">
                             <img th:src="@{/images/close.png}" alt="arrow" width="40px" height="40px"/>
                         </div>
                     </div>
@@ -96,7 +96,7 @@
                         <button type="submit" class="button pos-center">
                             <img th:src="@{/images/check.png}" alt="arrow" width="29px" height="29px"/>
                         </button>
-                        <div class="button" onclick="showModal(this, false, true);">
+                        <div class="button" onclick="showModal(this, false, 'reduce');">
                             <img th:src="@{/images/close.png}" alt="arrow" width="40px" height="40px"/>
                         </div>
                     </div>
@@ -109,10 +109,10 @@
             <div id="id-block" style="display:none;"></div>
             <div>Вы действительно хотите удалить товар?</div>
             <div class="modal-flex mt-5" style="justify-content:center;">
-                <div class="button" style="align-self:center;" onclick="deleteUser(this);">
+                <div class="button" style="align-self:center;" onclick="deleteProduct(this);">
                     <img th:src="@{/images/check.png}" alt="arrow" width="28px" height="28px"/>
                 </div>
-                <div class="button" style="align-self:center;" onclick="showModal(this, false, true);">
+                <div class="button" style="align-self:center;" onclick="showModal(this, false, 'del');">
                     <img th:src="@{/images/close.png}" alt="arrow" width="40px" height="40px"/>
                 </div>
             </div>
