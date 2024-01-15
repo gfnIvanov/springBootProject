@@ -3,6 +3,7 @@ const showAddForm = function(show) {
     const addButton = document.querySelector('.add-btn');
     addFormContainer.style.display = show ? '' : 'none';
     addButton.style.display = show ? 'none' : '';
+    const addForm = addFormContainer.firstElementChild;
     if (!show) {
         Array.from(addForm.elements).forEach(elem => {
             elem.value = '';
@@ -12,8 +13,12 @@ const showAddForm = function(show) {
     }
 };
 
+const checkVarExist = function(varObj) {
+    return typeof(varObj !== 'undefined') ? varObj : undefined;
+}
+
 const handleFormSubmit = function(event) {
-    const form = event.target.id === 'add-form' ? addForm: editForm;
+    const form = event.target;
     event.preventDefault();
     let validForm = true;
     Array.from(form.elements).forEach(elem => {
@@ -25,3 +30,7 @@ const handleFormSubmit = function(event) {
     });
     if (validForm) form.submit();
 };
+
+const intOnly = function(event) {
+    isNaN(event.key) && event.preventDefault();
+}

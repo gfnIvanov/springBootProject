@@ -1,11 +1,11 @@
-let addForm;
-let editForm;
+let addUserForm;
+let editUserForm;
 
 document.addEventListener("DOMContentLoaded", () => {
-    addForm = document.getElementById('add-form');
-    editForm = document.getElementById('edit-user-form');
-    addForm.addEventListener('submit', handleFormSubmit);
-    editForm.addEventListener('submit', handleFormSubmit);
+    addUserForm = document.getElementById('add-user-form');
+    editUserForm = document.getElementById('edit-user-form');
+    addUserForm.addEventListener('submit', handleFormSubmit);
+    editUserForm.addEventListener('submit', handleFormSubmit);
 });
 
 const showModal = function(dom, show, del) {
@@ -23,10 +23,10 @@ const showModal = function(dom, show, del) {
     modalEdit.style.display = show ? '' : 'none';
     if (show) {
         const str = dom.parentNode.parentNode;
-        editForm[0].value = str.children[0].innerText;
-        editForm[1].value = str.children[1].innerText;
-        editForm[2].value = str.children[2].innerText;
-        editForm[3].value = str.children[3].innerText;
+        editUserForm[0].value = str.children[0].innerText;
+        editUserForm[1].value = str.children[1].innerText;
+        editUserForm[2].value = str.children[2].innerText;
+        editUserForm[3].value = str.children[3].innerText;
     }
 };
 

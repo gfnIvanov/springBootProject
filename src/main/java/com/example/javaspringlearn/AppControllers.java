@@ -23,6 +23,8 @@ public class AppControllers {
     private CategoriesService categoriesService;
     @Autowired
     private UsersService userService;
+    @Autowired
+    private OperationsService operationService;
 
     @GetMapping("/")
     public String viewHomePage(Model model, @Param("login") String login) {
@@ -39,11 +41,11 @@ public class AppControllers {
 
     @GetMapping("/store")
     public String viewStorePage(Model model) {
-        ProductData productData = new ProductData();
         ArrayList<ProductData> productDataList = new ArrayList<>();
         List<Products> listProducts = productsService.listAll();
         for (int i = 0; i < listProducts.size(); i++) {
             Long id = listProducts.get(i).getId();
+            ProductData productData = new ProductData();
             productData.setId(id);
             productData.setName(listProducts.get(i).getName());
             productData.setCategory(listProducts.get(i).getCategory());
@@ -54,6 +56,7 @@ public class AppControllers {
         List<Categories> listCategories = categoriesService.listAll();
         model.addAttribute("product", new Products());
         model.addAttribute("productForm", new ProductForm());
+        model.addAttribute("operationForm", new OperationForm());
         model.addAttribute("listProducts", productDataList);
         model.addAttribute("listCategories", listCategories);
         return "store";
@@ -61,11 +64,11 @@ public class AppControllers {
 
     @PostMapping("/save-product")
     public String saveProduct(@ModelAttribute("productForm") ProductForm productForm) {
-        System.out.println(productForm.getCategoryId());
         Products product = new Products();
         product.setName(productForm.getProductName());
-        //product.setCategory(categoriesService.get(productForm.getCategoryId()));
-        //productsService.save(product);
+        product.setCategory(categoriesService.get(productForm.getCategoryId()));
+        System.out.println(product);
+        productsService.save(product);
         return "redirect:store";
     }
 
@@ -87,9 +90,13 @@ public class AppControllers {
         double stopInd = page == pagesCount ? listUsers.size() : slice * page;
         double startInd = page == pagesCount ? stopInd - remainder : stopInd - slice;
         int ind = 0;
-        for (int i = (int)startInd; i < stopInd; i++) {
-            listUsersSlice[ind] = listUsers.get(i);
-            ind++;
+        if (listUsers.size() > 0) {
+            for (int i = (int)startInd; i < stopInd; i++) {
+                listUsersSlice[ind] = listUsers.get(i);
+                ind++;
+            }
+        } else {
+            listUsersSlice = new Users[0];
         }
         model.addAttribute("user", user);
         model.addAttribute("listUsers", listUsersSlice);
@@ -111,14 +118,38 @@ public class AppControllers {
     }
 
     @PostMapping("/increase-quant")
-    public String increaseQuant(@ModelAttribute("user") Users user) {
-        userService.save(user);
-        return "redirect:users/1";
+    public String increaseQuant(@ModelAttribute("operationForm") OperationForm operationForm) {
+        Operations operation = new Operations();
+        operation.setProduct(productsService.get(operationForm.getProductId()));
+        operation.setAction(operationForm.getAction());
+        operation.setQuant(operationForm.getQuant());
+        operationService.save(operation);
+        return "redirect:store";
     }
 
     @PostMapping("/reduce-quant")
     public String reduceQuant(@ModelAttribute("user") Users user) {
         userService.save(user);
         return "redirect:users/1";
+    }
+
+    @PostMapping("/del-product/{id}")
+    public ResponseEntity<HttpStatus> deleteProduct(Model model, @PathVariable(name="id") Long id) {
+        productsService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/add-categories")
+    public ResponseEntity<HttpStatus> addCategories() {
+        List<Categories> categories = categoriesService.listAll();
+        if (categories.size() == 0) {
+            String[] catNames  = {"электроника", "одежда", "продукты"};
+            for (int i = 0; i < catNames.length; i++) {
+                Categories category = new Categories();
+                category.setName(catNames[i]);
+                categoriesService.save(category);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
