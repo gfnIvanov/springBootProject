@@ -7,8 +7,8 @@
     <link rel="stylesheet" th:href="@{/css/main.css}"/>
     <link rel="stylesheet" th:href="@{/css/grid.css}"/>
     <link rel="stylesheet" th:href="@{/css/modal.css}"/>
-    <script type="text/javascript" th:src="@{/scripts/store.js}"></script>
     <script type="text/javascript" th:src="@{/scripts/form.js}"></script>
+    <script type="text/javascript" th:src="@{/scripts/store.js}"></script>
     <script type="text/javascript" th:src="@{/scripts/modal.js}"></script>
 </head>
 <body>
@@ -20,7 +20,7 @@
             </div>
         </div>
         <div class="add-form" style="display:none;">
-            <form id="add-form" action="#" th:action="@{/save-product}" th:object="${productForm}" method="post">
+            <form id="add-product-form" action="#" th:action="@{/save-product}" th:object="${productForm}" method="post">
                 <div class="grid-flex">
                     <input type="text" th:field="*{productName}" placeholder="Наименование" onblur="unRequired(this);"/>
                     <select th:field="*{categoryId}" placeholder="Категория" onchange="unRequired(this); setInputColor(this);">
@@ -69,10 +69,11 @@
     <div id="modal-increase" class="modal-mask" style="display:none;">
         <div class="edit-modal">
             <div class="modal-title">Добавить товар</div>
-            <form id="increase-product-form" action="#" th:action="@{/increase-quant}" th:object="${product}" method="post">
+            <form id="increase-product-form" action="#" th:action="@{/increase-quant}" th:object="${operationForm}" method="post">
                 <div class="modal-flex">
-                    <input th:field="*{id}" style="display:none;"/>
-                    <input type="text" placeholder="Количество" onblur="unRequired(this);"/>
+                    <input type="text" th:field="*{productId}" style="display:none;"/>
+                    <input type="text" th:field="*{action}" style="display:none;"/>
+                    <input type="text" th:field="*{quant}" placeholder="Количество" onblur="unRequired(this);" onkeypress="intOnly(event)"/>
                     <div class="modal-flex">
                         <button type="submit" class="button pos-center">
                             <img th:src="@{/images/check.png}" alt="arrow" width="29px" height="29px"/>
@@ -91,7 +92,7 @@
             <form id="reduce-product-form" action="#" th:action="@{/reduce-quant}" th:object="${product}" method="post">
                 <div class="modal-flex">
                     <input th:field="*{id}" style="display:none;"/>
-                    <input type="text" placeholder="Количество" onblur="unRequired(this);"/>
+                    <input type="text" placeholder="Количество" onblur="unRequired(this);" onkeypress="intOnly(event)"/>
                     <div class="modal-flex">
                         <button type="submit" class="button pos-center">
                             <img th:src="@{/images/check.png}" alt="arrow" width="29px" height="29px"/>
@@ -109,7 +110,7 @@
             <div id="id-block" style="display:none;"></div>
             <div>Вы действительно хотите удалить товар?</div>
             <div class="modal-flex mt-5" style="justify-content:center;">
-                <div class="button" style="align-self:center;" onclick="deleteProduct(this);">
+                <div class="button" style="align-self:center;" onclick="deleteProduct();">
                     <img th:src="@{/images/check.png}" alt="arrow" width="28px" height="28px"/>
                 </div>
                 <div class="button" style="align-self:center;" onclick="showModal(this, false, 'del');">

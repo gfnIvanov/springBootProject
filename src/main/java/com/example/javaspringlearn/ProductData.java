@@ -1,9 +1,8 @@
 package com.example.javaspringlearn;
+import lombok.Setter;
 
+
+@Setter
 public class ProductData extends Products {
     public int actualQuant;
-
-    public void setActualQuant(int actualQuant) {
-        this.actualQuant = actualQuant;
-    }
 }

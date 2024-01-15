@@ -1,10 +1,14 @@
-let addForm;
+let addProductForm;
+let increaseForm;
+let reduceForm;
 
 document.addEventListener("DOMContentLoaded", () => {
-    addForm = document.getElementById('add-form');
-    addForm.addEventListener('submit', handleFormSubmit);
+    addProductForm = document.getElementById('add-product-form');
+    addProductForm.addEventListener('submit', handleFormSubmit);
     increaseForm = document.getElementById('increase-product-form');
+    increaseForm.addEventListener('submit', handleFormSubmit);
     reduceForm = document.getElementById('reduce-product-form');
+    reduceForm.addEventListener('submit', handleFormSubmit);
 });
 
 const setInputColor = function(select) {
@@ -13,20 +17,25 @@ const setInputColor = function(select) {
 };
 
 const showModal = function(dom, show, type) {
-    if (type === 'del') {
-        const modalDel = document.getElementById('modal-del');
-        modalDel.style.display = show ? '' : 'none';
-        if (show) {
-            const str = dom.parentNode.parentNode;
-            const idBlock = modalDel.querySelector('[id="id-block"]');
-            idBlock.innerText = str.children[0].innerText;
-        }
-        return;
-    }
     const modal = document.getElementById(`modal-${type}`);
     modal.style.display = show ? '' : 'none';
     if (show) {
         const str = dom.parentNode.parentNode;
+        if (type === 'del') {
+            const idBlock = form.querySelector('[id="id-block"]');
+            idBlock.innerText = str.children[0].innerText;
+            return;
+        }
         increaseForm[0].value = str.children[0].innerText;
+        increaseForm[1].value = type === 'increase' ? 'additional' : 'write-off';
     }
+};
+
+const deleteProduct = async function() {
+    const modalDel = document.getElementById('modal-del');
+    const productId = modalDel.querySelector('[id="id-block"]').innerText;
+    const response = await fetch(`http://localhost:9090/del-product/${productId}`, {
+        method: 'POST',
+    });
+    if (response.status === 200) document.location.reload();
 };
