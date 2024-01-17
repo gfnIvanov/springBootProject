@@ -24,7 +24,23 @@ public class AppControllers {
     @Autowired
     private UsersService userService;
     @Autowired
-    private OperationsService operationService;
+    private OperationsService operationsService;
+
+    private Pagination pagination(int page, float dataSize) {
+        double slice = 5.0;
+        int pagesCount = (int)Math.ceil(dataSize / slice);
+        Page[] pages = new Page[pagesCount];
+        for (int i = 0; i < pagesCount; i++) {
+            int current = i + 1;
+            pages[i] = new Page(current, current == page ? "active" : "");
+        }
+        double remainder = dataSize % slice;
+        remainder = remainder == 0 ? 5 : remainder;
+        double sliceLength = page == pagesCount ? remainder : slice;
+        double stopInd = page == pagesCount ? dataSize : slice * page;
+        double startInd = page == pagesCount ? stopInd - remainder : stopInd - slice;
+        return new Pagination(sliceLength, stopInd, startInd, pages);
+    }
 
     @GetMapping("/")
     public String viewHomePage(Model model, @Param("login") String login) {
@@ -39,26 +55,43 @@ public class AppControllers {
         return "home";
     }
 
-    @GetMapping("/store")
-    public String viewStorePage(Model model) {
+    @GetMapping(value = {"/store/{page}", "/store/{page}/{category}"})
+    public String viewStorePage(Model model,
+                                @PathVariable(name="page") int page,
+                                @PathVariable(name="category", required = false) Long category) {
         ArrayList<ProductData> productDataList = new ArrayList<>();
         List<Products> listProducts = productsService.listAll();
         for (int i = 0; i < listProducts.size(); i++) {
+            Categories currentCategory = listProducts.get(i).getCategory();
+            if (category != null && currentCategory.getId() != category) continue;
             Long id = listProducts.get(i).getId();
             ProductData productData = new ProductData();
             productData.setId(id);
             productData.setName(listProducts.get(i).getName());
-            productData.setCategory(listProducts.get(i).getCategory());
+            productData.setCategory(currentCategory);
             productData.setDateCreate(listProducts.get(i).getDateCreate());
             productData.setActualQuant(productsService.getActualQuant(id));
             productDataList.add(i, productData);
+        }
+        Pagination pagination = pagination(page, (float)productDataList.size());
+        int ind = 0;
+        ProductData[] productDataListSlice = new ProductData[(int)pagination.getSliceLength()];
+        if (listProducts.size() > 0 && productDataList.size() > 0) {
+            for (int i = (int)pagination.getStartInd(); i < pagination.getStopInd(); i++) {
+                productDataListSlice[ind] = productDataList.get(i);
+                ind++;
+            }
+        } else {
+            productDataListSlice = new ProductData[0];
         }
         List<Categories> listCategories = categoriesService.listAll();
         model.addAttribute("product", new Products());
         model.addAttribute("productForm", new ProductForm());
         model.addAttribute("operationForm", new OperationForm());
-        model.addAttribute("listProducts", productDataList);
+        model.addAttribute("listProducts", productDataListSlice);
         model.addAttribute("listCategories", listCategories);
+        model.addAttribute("pages", pagination.getPages());
+        model.addAttribute("noproducts", listProducts.size() == 0 ? "Товары не найдены" : "");
         return "store";
     }
 
@@ -69,38 +102,26 @@ public class AppControllers {
         product.setCategory(categoriesService.get(productForm.getCategoryId()));
         System.out.println(product);
         productsService.save(product);
-        return "redirect:store";
+        return "redirect:store/1";
     }
 
     @GetMapping("/users/{page}")
     public String viewUsersPage(Model model, @PathVariable(name="page") int page) {
-        double slice = 5.0;
-        Users user = new Users();
         List<Users> listUsers = userService.listAll();
-        int pagesCount = (int)Math.ceil((float)listUsers.size() / slice);
-        Page[] pages = new Page[pagesCount];
-        for (int i = 0; i < pagesCount; i++) {
-            int current = i + 1;
-            pages[i] = new Page(current, current == page ? "active" : "");
-        }
-        double remainder = listUsers.size() % slice;
-        remainder = remainder == 0 ? 5 : remainder;
-        double sliceLength = page == pagesCount ? remainder : slice;
-        Users[] listUsersSlice = new Users[(int)sliceLength];
-        double stopInd = page == pagesCount ? listUsers.size() : slice * page;
-        double startInd = page == pagesCount ? stopInd - remainder : stopInd - slice;
+        Pagination pagination = pagination(page, (float)listUsers.size());
         int ind = 0;
+        Users[] listUsersSlice = new Users[(int)pagination.getSliceLength()];
         if (listUsers.size() > 0) {
-            for (int i = (int)startInd; i < stopInd; i++) {
+            for (int i = (int)pagination.getStartInd(); i < pagination.getStopInd(); i++) {
                 listUsersSlice[ind] = listUsers.get(i);
                 ind++;
             }
         } else {
             listUsersSlice = new Users[0];
         }
-        model.addAttribute("user", user);
+        model.addAttribute("user", new Users());
         model.addAttribute("listUsers", listUsersSlice);
-        model.addAttribute("pages", pages);
+        model.addAttribute("pages", pagination.getPages());
         model.addAttribute("nousers", listUsers.size() == 0 ? "Пользователи не найдены" : "");
         return "users";
     }
@@ -117,24 +138,19 @@ public class AppControllers {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/increase-quant")
+    @PostMapping("/update-quant")
     public String increaseQuant(@ModelAttribute("operationForm") OperationForm operationForm) {
         Operations operation = new Operations();
         operation.setProduct(productsService.get(operationForm.getProductId()));
         operation.setAction(operationForm.getAction());
         operation.setQuant(operationForm.getQuant());
-        operationService.save(operation);
-        return "redirect:store";
-    }
-
-    @PostMapping("/reduce-quant")
-    public String reduceQuant(@ModelAttribute("user") Users user) {
-        userService.save(user);
-        return "redirect:users/1";
+        operationsService.save(operation);
+        return "redirect:store/1";
     }
 
     @PostMapping("/del-product/{id}")
     public ResponseEntity<HttpStatus> deleteProduct(Model model, @PathVariable(name="id") Long id) {
+        operationsService.delByProduct(id);
         productsService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -151,5 +167,10 @@ public class AppControllers {
             }
         }
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/use-product-filter/{category}")
+    public String useProductFilter(@PathVariable(name="category") Long category) {
+        return "redirect:store/1/" + category;
     }
 }

@@ -18,4 +18,8 @@ public class OperationsService {
     public void save(Operations operation) {
         repo.save(operation);
     }
+
+    public void delByProduct(Long productId) {
+        repo.delByProduct(productId);
+    }
 }

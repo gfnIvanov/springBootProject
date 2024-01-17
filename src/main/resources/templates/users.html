@@ -10,12 +10,13 @@
     <script type="text/javascript" th:src="@{/scripts/form.js}"></script>
     <script type="text/javascript" th:src="@{/scripts/users.js}"></script>
     <script type="text/javascript" th:src="@{/scripts/modal.js}"></script>
+    <script type="text/javascript" th:src="@{/scripts/pages.js}"></script>
 </head>
 <body>
     <div class="users-frame">
         <div class="grid-flex" style="justify-content:space-between;">
             <h1>Пользователи системы</h1>
-            <div class="add-btn button" style="align-self:end;" onclick="showAddForm(true);">
+            <div class="add-btn button" style="align-self:end;" onclick="showForm(true, 'add');">
                 <img th:src="@{/images/add.png}" alt="arrow" width="40px" height="40px"/>
             </div>
         </div>
@@ -30,7 +31,7 @@
                         <button type="submit" class="button pos-center">
                             <img th:src="@{/images/check.png}" alt="arrow" width="29px" height="29px"/>
                         </button>
-                        <div class="button" onclick="showAddForm(false);">
+                        <div class="button" onclick="showForm(false, 'add');">
                             <img th:src="@{/images/close.png}" alt="arrow" width="40px" height="40px"/>
                         </div>
                     </div>
@@ -63,7 +64,7 @@
         </div>
         <div class="mt-5" style="text-align:center;" th:text="${nousers}"></div>
         <div class="grid-flex" style="justify-content:center;">
-            <div th:each="page: ${pages}" class="button page-btn" th:classappend="${page.active}" th:text="${page.num}" onclick="changePage(this);"></div>
+            <div th:each="page: ${pages}" class="button page-btn" th:classappend="${page.active}" th:text="${page.num}" onclick="changePage(this, 'users');"></div>
         </div>
     </div>
     <div id="modal-edit" class="modal-mask" style="display:none;">
