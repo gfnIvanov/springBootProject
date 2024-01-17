@@ -171,3 +171,7 @@ button {
 .action-btn-block div {
     position: relative;
 }
+
+.add-form .filter-form {
+    margin: 5px 0px 15px;
+}

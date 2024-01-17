@@ -38,14 +38,3 @@ const deleteUser = async function() {
     });
     if (response.status === 200) document.location.reload();
 };
-
-const changePage = async function(dom) {
-    if (dom.classList.contains('active')) return;
-    const page = dom.innerText;
-    currentPage = page;
-    const response = await fetch(`http://localhost:9090/users/${page}`);
-    if (response.status === 200) {
-        window.top.postMessage({ action: 'changePage', page }, '*');
-        document.location.reload();
-    }
-};

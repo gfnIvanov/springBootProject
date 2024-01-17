@@ -2,9 +2,9 @@ window.onmessage = function(event){
     const pages = document.querySelectorAll('[class$="-page"]');
     if (event.data.action == 'changePage') {
         let usersPage = Array.from(pages).find(page => {
-            return page.classList.contains('users-page');
+            return page.classList.contains(`${event.data.template}-page`);
         });
-        usersPage.setAttribute('src', `users/${event.data.page}`);
+        usersPage.setAttribute('src', `${event.data.template}/${event.data.page}`);
     }
 };
 

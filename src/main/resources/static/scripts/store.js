@@ -22,12 +22,13 @@ const showModal = function(dom, show, type) {
     if (show) {
         const str = dom.parentNode.parentNode;
         if (type === 'del') {
-            const idBlock = form.querySelector('[id="id-block"]');
+            const idBlock = modal.querySelector('[id="id-block"]');
             idBlock.innerText = str.children[0].innerText;
             return;
         }
-        increaseForm[0].value = str.children[0].innerText;
-        increaseForm[1].value = type === 'increase' ? 'additional' : 'write-off';
+        const form = type === 'increase' ? increaseForm : reduceForm;
+        form[0].value = str.children[0].innerText;
+        form[1].value = type === 'increase' ? 'additional' : 'write-off';
     }
 };
 
@@ -38,4 +39,11 @@ const deleteProduct = async function() {
         method: 'POST',
     });
     if (response.status === 200) document.location.reload();
+};
+
+const useProductFilter = async function() {
+    await fetch(`http://localhost:9090/use-product-filter/1`, {
+        method: 'POST',
+    });
+    // if (response.status === 200) document.location.reload();
 };

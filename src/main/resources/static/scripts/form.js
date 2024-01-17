@@ -1,11 +1,11 @@
-const showAddForm = function(show) {
-    const addFormContainer = document.querySelector('.add-form');
-    const addButton = document.querySelector('.add-btn');
-    addFormContainer.style.display = show ? '' : 'none';
-    addButton.style.display = show ? 'none' : '';
-    const addForm = addFormContainer.firstElementChild;
+const showForm = function(show, type) {
+    const formContainer = document.querySelector(`.${type}-form`);
+    const formButton = document.querySelector(`.${type}-btn`);
+    formContainer.style.display = show ? '' : 'none';
+    formButton.style.display = show ? 'none' : '';
+    const form = formContainer.firstElementChild;
     if (!show) {
-        Array.from(addForm.elements).forEach(elem => {
+        Array.from(form.elements).forEach(elem => {
             elem.value = '';
             elem.nodeName === 'SELECT' && setInputColor(elem);
             elem.classList.remove('required');
