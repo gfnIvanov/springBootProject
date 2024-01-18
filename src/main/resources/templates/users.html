@@ -64,7 +64,13 @@
         </div>
         <div class="mt-5" style="text-align:center;" th:text="${nousers}"></div>
         <div class="grid-flex" style="justify-content:center;">
-            <div th:each="page: ${pages}" class="button page-btn" th:classappend="${page.active}" th:text="${page.num}" onclick="changePage(this, 'users');"></div>
+            <div
+                th:each="page: ${pages}"
+                class="button page-btn"
+                th:classappend="${page.active}"
+                th:text="${page.num}"
+                onclick="changePage(this, 'users');"
+            ></div>
         </div>
     </div>
     <div id="modal-edit" class="modal-mask" style="display:none;">

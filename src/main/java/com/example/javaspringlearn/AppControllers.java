@@ -3,6 +3,7 @@ package com.example.javaspringlearn;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import jakarta.persistence.Tuple;
+
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -44,10 +48,18 @@ public class AppControllers {
 
     @GetMapping("/")
     public String viewHomePage(Model model, @Param("login") String login) {
+        Boolean status = Authorization.getInstance().getStatus();
+        if (!status) return "redirect:login";
         Users user = userService.getWithLogin("admin");
         model.addAttribute("user", user);
         model.addAttribute("login", login);
         return "index";
+    }
+
+    @GetMapping("/login")
+    public String viewLoginPage(Model model) {
+        model.addAttribute("authForm", new AuthForm());
+        return "login";
     }
 
     @GetMapping("/home")
@@ -61,9 +73,13 @@ public class AppControllers {
                                 @PathVariable(name="category", required = false) Long category) {
         ArrayList<ProductData> productDataList = new ArrayList<>();
         List<Products> listProducts = productsService.listAll();
+        int skip = 0;
         for (int i = 0; i < listProducts.size(); i++) {
             Categories currentCategory = listProducts.get(i).getCategory();
-            if (category != null && currentCategory.getId() != category) continue;
+            if (category != null && currentCategory.getId() != category) {
+                skip = skip + 1;
+                continue;
+            }
             Long id = listProducts.get(i).getId();
             ProductData productData = new ProductData();
             productData.setId(id);
@@ -71,7 +87,8 @@ public class AppControllers {
             productData.setCategory(currentCategory);
             productData.setDateCreate(listProducts.get(i).getDateCreate());
             productData.setActualQuant(productsService.getActualQuant(id));
-            productDataList.add(i, productData);
+            System.out.println(skip);
+            productDataList.add(i - skip, productData);
         }
         Pagination pagination = pagination(page, (float)productDataList.size());
         int ind = 0;
@@ -90,6 +107,7 @@ public class AppControllers {
         model.addAttribute("operationForm", new OperationForm());
         model.addAttribute("listProducts", productDataListSlice);
         model.addAttribute("listCategories", listCategories);
+        model.addAttribute("productFilterForm", new ProductFilterForm());
         model.addAttribute("pages", pagination.getPages());
         model.addAttribute("noproducts", listProducts.size() == 0 ? "Товары не найдены" : "");
         return "store";
@@ -169,8 +187,37 @@ public class AppControllers {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/use-product-filter/{category}")
-    public String useProductFilter(@PathVariable(name="category") Long category) {
-        return "redirect:store/1/" + category;
+    @PostMapping("/use-product-filter")
+    public String useProductFilter(@ModelAttribute("productFilterForm") ProductFilterForm productFilterForm) {
+        Long categoryId = productFilterForm.getCategoryId();
+        if (categoryId == 0) {
+            return "redirect:store/1";
+        }
+        return "redirect:store/1/" + categoryId;
+    }
+
+    @PostMapping("/login")
+    public String login(@ModelAttribute("authForm") AuthForm authForm) {
+        Users user = userService.getWithLogin(authForm.getLogin());
+        if (user != null && user.getPassword().equals(authForm.getPassword())) {
+            Authorization auth = Authorization.getInstance();
+            auth.setStatus(true);
+            return "redirect:/";
+        }
+        return "redirect:login";
+    }
+
+    @GetMapping("/get-data-for-graphs")
+    public ResponseEntity<String> getDataForGraphs() {
+        ArrayList<String> result = new ArrayList<String>();
+        List<Tuple> graphData = operationsService.getDataForGraphs();
+        for (int i = 0; i < graphData.size(); i++) {
+            String str = "{\"name\": \"" + graphData.get(i).get(0) + "\", \"action\": \""
+                         + graphData.get(i).get(1) + "\", \"quant\": "
+                         + graphData.get(i).get(2) + "}";
+            result.add(str);
+        }
+        JSONArray jresult = new JSONArray(result);
+        return new ResponseEntity<>(jresult.toString(), HttpStatus.OK);
     }
 }
