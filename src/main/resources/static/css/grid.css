@@ -27,10 +27,6 @@
     font-weight: bold;
 }
 
-.required {
-    border: 1px solid red;
-}
-
 .pos-center {
     padding: 0;
     align-self: center;

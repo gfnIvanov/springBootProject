@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" th:href="@{/logo.svg}">
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+    <link rel="stylesheet" th:href="@{/css/modal.css}"/>
+    <script type="text/javascript" th:src="@{/scripts/form.js}"></script>
+    <script type="text/javascript" th:src="@{/scripts/modal.js}"></script>
+    <script type="text/javascript" th:src="@{/scripts/login.js}"></script>
+</head>
+<body>
+    <div id="modal-increase" class="modal-mask">
+        <div class="edit-modal">
+            <div class="modal-title">Авторизация</div>
+            <form
+                id="auth-form"
+                action="#"
+                th:action="@{/login}"
+                th:object="${authForm}"
+                method="post"
+                onload="console.log(this);"
+            >
+                <div>
+                    <input type="text" th:field="*{login}" placeholder="Логин" onblur="unRequired(this);"/>
+                </div>
+                <div>
+                    <input type="password" th:field="*{password}" placeholder="Пароль" onblur="unRequired(this);"/>
+                </div>
+                <div class="modal-flex">
+                    <button type="submit" class="button pos-center btn-green btn-login">Войти</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

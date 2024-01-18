@@ -45,11 +45,10 @@
             </form>
         </div>
         <div class="filter-form" style="display:none;">
-            <form id="add-product-form" action="#" th:action="@{/use-product-filter}" th:object="${productForm}" method="post">
+            <form id="add-product-form" action="#" th:action="@{/use-product-filter}" th:object="${productFilterForm}" method="post">
                 <div class="grid-flex">
                     <select th:field="*{categoryId}" placeholder="Категория" onchange="unRequired(this); setInputColor(this);">
-                        <option value="" hidden>Категория</option>
-                        <option value="all">Все</option>
+                        <option th:value="0" hidden>Категория</option>
                         <option th:each="category: ${listCategories}" th:value="${category.id}" th:text="${category.name}"></option>
                     </select>
                     <div class="grid-flex">

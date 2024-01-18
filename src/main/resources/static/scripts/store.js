@@ -40,10 +40,3 @@ const deleteProduct = async function() {
     });
     if (response.status === 200) document.location.reload();
 };
-
-const useProductFilter = async function() {
-    await fetch(`http://localhost:9090/use-product-filter/1`, {
-        method: 'POST',
-    });
-    // if (response.status === 200) document.location.reload();
-};

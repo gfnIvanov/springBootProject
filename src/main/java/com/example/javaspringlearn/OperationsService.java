@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.Tuple;
+
 
 @Service
 public class OperationsService {
@@ -21,5 +23,9 @@ public class OperationsService {
 
     public void delByProduct(Long productId) {
         repo.delByProduct(productId);
+    }
+
+    public List<Tuple> getDataForGraphs() {
+        return repo.getDataForGraphs();
     }
 }

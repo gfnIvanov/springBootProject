@@ -175,3 +175,26 @@ button {
 .add-form .filter-form {
     margin: 5px 0px 15px;
 }
+
+#auth-form div {
+    margin: 5px;
+    justify-content: center;
+}
+
+#auth-form .modal-flex {
+    margin-top: 20px;
+}
+
+#auth-form button {
+    padding: 5px;
+}
+
+.required {
+    border: 1px solid red;
+}
+
+.graphs-block {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 20px;
+}
