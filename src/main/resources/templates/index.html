@@ -21,6 +21,9 @@
             <div class="menu-item menu-item-mini button" onclick="showPage('users');">
                 <img th:src="@{/images/user.png}" alt="user" width="40px" height="40px"/>
             </div>
+            <div class="menu-item menu-item-mini button" onclick="showPage('posts');">
+                <img th:src="@{/images/posts.png}" alt="user" width="40px" height="40px"/>
+            </div>
             <div class="menu-item menu-item-mini button sidebar-arrow" onclick="showHideSidebar();">
                 <img class="arrow-rotate" th:src="@{/images/arrow.png}" alt="arrow" width="40px" height="40px"/>
             </div>
@@ -29,6 +32,7 @@
             <div class="menu-item button btn-green" onclick="showPage('home');">Главная</div>
             <div class="menu-item button btn-green" onclick="showPage('store');">Склад</div>
             <div class="menu-item button btn-green" onclick="showPage('users');">Пользователи</div>
+            <div class="menu-item button btn-green" onclick="showPage('users');">Статьи</div>
             <div class="menu-item button sidebar-arrow" onclick="showHideSidebar();">
                 <img th:src="@{/images/arrow.png}" alt="arrow" width="40px" height="40px"/>
             </div>
@@ -37,6 +41,7 @@
             <iframe class="home-page" th:src="@{/home}" seamless></iframe>
             <iframe class="store-page" th:src="@{/store/1}" seamless style="display:none;"></iframe>
             <iframe class="users-page" th:src="@{/users/1}" seamless style="display:none;"></iframe>
+            <iframe class="posts-page" th:src="@{/posts}" seamless style="display:none;"></iframe>
         </div>
     </div>
 </body>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+    <link rel="stylesheet" th:href="@{/css/grid.css}"/>
+    <link rel="stylesheet" th:href="@{/css/modal.css}"/>
+    <script type="text/javascript" th:src="@{/scripts/form.js}"></script>
+    <script type="text/javascript" th:src="@{/scripts/modal.js}"></script>
+</head>
+<body>
+    <div class="users-frame">
+        <div class="grid-flex" style="justify-content:space-between;">
+            <h1>Статьи</h1>
+            <div th:if="${isAdmin}" class="add-btn button" style="align-self:end;" onclick="showForm(true, 'add');">
+                <img th:src="@{/images/add.png}" alt="arrow" width="40px" height="40px"/>
+            </div>
+        </div>
+        <div class="add-form" style="display:none;">
+            <form id="add-user-form" action="#" th:action="@{/save-post}" th:object="${postForm}" method="post">
+                <div class="grid-flex">
+                    <input type="text" th:field="*{title}" placeholder="Заголовок" onblur="unRequired(this);"/>
+                    <textarea th:field="*{text}" placeholder="Содержание" onblur="unRequired(this);"></textarea>
+                    <div class="grid-flex">
+                        <button type="submit" class="button pos-center">
+                            <img th:src="@{/images/check.png}" alt="arrow" width="29px" height="29px"/>
+                        </button>
+                        <div class="button pos-center" onclick="showForm(false, 'add');">
+                            <img th:src="@{/images/close.png}" alt="arrow" width="40px" height="40px"/>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="grid-row bold">
+            <div>Пользователь</div>
+            <div>Заголовок</div>
+            <div>Дата добавления</div>
+            <div>Действия</div>
+        </div>
+        <div class="grid-list" th:each="post: ${listPosts}">
+            <div class="grid-row grid-flex">
+                <div th:text="${post.id}" style="display:none;"></div>
+                <div th:text="${post.user.getLogin()}"></div>
+                <div th:text="${post.title}"></div>
+                <div th:text="${post.dateCreate}"></div>
+                <div>
+                    <div class="button" onclick="showModal(this, true);" title="Редактировать пост">
+                        <img class="mt-5" th:src="@{/images/edit.png}" alt="arrow" width="30px" height="30px"/>
+                    </div>
+                    <div class="button" onclick="showModal(this, true, true);" title="Удалить пост">
+                        <img class="mt-5" th:src="@{/images/close.png}" alt="arrow" width="30px" height="30px"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-5" style="text-align:center;" th:text="${noposts}"></div>
+    </div>
+</body>
+</html>
