@@ -8,6 +8,7 @@ import lombok.Setter;
 public class Authorization {
     private static volatile Authorization instance;
     private Boolean status = false;
+    private Users user;
 
     public static Authorization getInstance() {
         Authorization localInstance = instance;

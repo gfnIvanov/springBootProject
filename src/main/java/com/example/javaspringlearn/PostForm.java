@@ -5,6 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ProductFilterForm {
-    private Long categoryId;
+public class PostForm {
+    private String title;
+    private String text;
 }
+

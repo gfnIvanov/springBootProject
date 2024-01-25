@@ -27,6 +27,8 @@
                     <input type="text" th:field="*{firstname}" placeholder="Имя" onblur="unRequired(this);"/>
                     <input type="text" th:field="*{lastname}" placeholder="Фамилия" onblur="unRequired(this);"/>
                     <input type="password" th:field="*{password}" placeholder="Пароль" onblur="unRequired(this);"/>
+                    <input type="checkbox" th:field="*{isAdmin}" id="coding" value="1"/>
+                    <label for="coding" style="padding: 9px 12px 0px 0px">админ</label>
                     <div class="grid-flex">
                         <button type="submit" class="button pos-center">
                             <img th:src="@{/images/check.png}" alt="arrow" width="29px" height="29px"/>
@@ -82,6 +84,8 @@
                     <input type="text" th:field="*{firstname}" placeholder="Имя" onblur="unRequired(this);"/>
                     <input type="text" th:field="*{lastname}" placeholder="Фамилия" onblur="unRequired(this);"/>
                     <input type="password" th:field="*{password}" placeholder="Пароль" onblur="unRequired(this);"/>
+                    <input type="checkbox" id="coding" value="1"/>
+                    <label for="coding" style="padding: 9px 12px 0px 0px">админ</label>
                     <div class="modal-flex">
                         <button type="submit" class="button pos-center">
                             <img th:src="@{/images/check.png}" alt="arrow" width="29px" height="29px"/>

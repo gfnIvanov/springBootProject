@@ -1,43 +1,40 @@
 package com.example.javaspringlearn;
 
 import java.sql.Timestamp;
+
 import org.hibernate.annotations.UpdateTimestamp;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Entity
 @Getter
 @Setter
-public class Users {
+public class Posts {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @ManyToOne
+    @JoinColumn(name = "user")
     @NotNull
-    private String login;
+    private Users user;
 
     @NotNull
-    private String firstname;
+    private String title;
 
     @NotNull
-    private String lastname;
-
-    @NotNull
-    private String password;
+    private String text;
 
     @UpdateTimestamp
     private Timestamp dateCreate;
 
-    private Integer isAdmin;
-
-    public Users() {}
+    public Posts() {}
 }

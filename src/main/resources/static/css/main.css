@@ -44,7 +44,7 @@ h1 {
     margin-bottom: 10px;
 }
 
-input, select {
+input:not([type="checkbox"]), select, textarea {
     width: 200px;
     height: 30px;
     padding: 0px 5px 0px;
@@ -53,6 +53,11 @@ input, select {
     border: 1px solid #4CAF50;
     color: white;
     margin: 5px 5px 0px 0px;
+}
+
+textarea {
+    width: 500px;
+    height: 100px;
 }
 
 select {

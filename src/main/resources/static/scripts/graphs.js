@@ -39,7 +39,6 @@ const prepareData = function(rawData) {
 };
 
 const drawDiagramForActualQuant = function(data) {
-    // Declare the chart dimensions and margins.
     const width = 600;
     const height = 500;
     const marginTop = 30;
@@ -91,7 +90,6 @@ const drawDiagramForActualQuant = function(data) {
 };
 
 const drawDiagramForMovements = function(data) {
-    // Declare the chart dimensions and margins.
     const width = 650;
     const height = 500;
     const marginTop = 30;
@@ -99,18 +97,15 @@ const drawDiagramForMovements = function(data) {
     const marginBottom = 30;
     const marginLeft = 40;
 
-    // Declare the x (horizontal position) scale.
     const x = d3.scaleBand()
-        .domain(d3.groupSort(data, ([d]) => -d.quant, (d) => d.name)) // descending quant
+        .domain(d3.groupSort(data, ([d]) => -d.quant, (d) => d.name))
         .range([marginLeft, width - marginRight])
         .padding(0.1);
 
-    // Declare the y (vertical position) scale.
     const y = d3.scaleLinear()
         .domain([0, d3.max(data, (d) => d.quant)])
         .range([height - marginBottom, marginTop]);
 
-    // Create the SVG container.
     const svg = d3.create('svg')
         .attr('width', width)
         .attr('height', height)
@@ -153,12 +148,10 @@ const drawDiagramForMovements = function(data) {
         })
         .attr('width', x.bandwidth());
 
-    // Add the x-axis and label.
     svg.append('g')
         .attr('transform', `translate(0,${height - marginBottom})`)
         .call(d3.axisBottom(x).tickSizeOuter(0));
 
-    // Add the y-axis and label, and remove the domain line.
     svg.append('g')
         .attr('transform', `translate(${marginLeft},0)`)
         .call(d3.axisLeft(y).tickFormat((y) => (y).toFixed()))
@@ -169,7 +162,6 @@ const drawDiagramForMovements = function(data) {
             .attr('fill', 'currentColor')
             .attr('text-anchor', 'start')
             .text('Движение товаров по категориям'));
-    // Return the SVG element.
     movementsProducts.append(svg.node());
 
     const legendData = [

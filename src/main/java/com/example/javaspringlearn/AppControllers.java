@@ -29,6 +29,8 @@ public class AppControllers {
     private UsersService userService;
     @Autowired
     private OperationsService operationsService;
+    @Autowired
+    private PostsService postsService;
 
     private Pagination pagination(int page, float dataSize) {
         double slice = 5.0;
@@ -67,27 +69,41 @@ public class AppControllers {
         return "home";
     }
 
-    @GetMapping(value = {"/store/{page}", "/store/{page}/{category}"})
+    @GetMapping(value = {
+        "/store/{page}",
+        "/store/{page}/{category}",
+        "/store/{page}/{category}/{product}"
+    })
     public String viewStorePage(Model model,
                                 @PathVariable(name="page") int page,
-                                @PathVariable(name="category", required = false) Long category) {
+                                @PathVariable(name="category", required = false) Long category,
+                                @PathVariable(name="product", required = false) Long product) {
         ArrayList<ProductData> productDataList = new ArrayList<>();
         List<Products> listProducts = productsService.listAll();
         int skip = 0;
+        Boolean fullFilters = category != null && category != 0 && product != null;
         for (int i = 0; i < listProducts.size(); i++) {
             Categories currentCategory = listProducts.get(i).getCategory();
-            if (category != null && currentCategory.getId() != category) {
+            String currentProductName = listProducts.get(i).getName();
+            if (fullFilters) {
+                if (currentCategory.getId() != category || !currentProductName.equals(productsService.get(product).getName())) {
+                    skip = skip + 1;
+                    continue;
+                }
+            } else if (category != null && category != 0 && currentCategory.getId() != category) {
+                skip = skip + 1;
+                continue;
+            } else if (product != null && !currentProductName.equals(productsService.get(product).getName())) {
                 skip = skip + 1;
                 continue;
             }
             Long id = listProducts.get(i).getId();
             ProductData productData = new ProductData();
             productData.setId(id);
-            productData.setName(listProducts.get(i).getName());
+            productData.setName(currentProductName);
             productData.setCategory(currentCategory);
             productData.setDateCreate(listProducts.get(i).getDateCreate());
             productData.setActualQuant(productsService.getActualQuant(id));
-            System.out.println(skip);
             productDataList.add(i - skip, productData);
         }
         Pagination pagination = pagination(page, (float)productDataList.size());
@@ -107,7 +123,6 @@ public class AppControllers {
         model.addAttribute("operationForm", new OperationForm());
         model.addAttribute("listProducts", productDataListSlice);
         model.addAttribute("listCategories", listCategories);
-        model.addAttribute("productFilterForm", new ProductFilterForm());
         model.addAttribute("pages", pagination.getPages());
         model.addAttribute("noproducts", listProducts.size() == 0 ? "Товары не найдены" : "");
         return "store";
@@ -118,7 +133,6 @@ public class AppControllers {
         Products product = new Products();
         product.setName(productForm.getProductName());
         product.setCategory(categoriesService.get(productForm.getCategoryId()));
-        System.out.println(product);
         productsService.save(product);
         return "redirect:store/1";
     }
@@ -144,10 +158,36 @@ public class AppControllers {
         return "users";
     }
 
+    @GetMapping("/posts")
+    public String viewPostsPage(Model model) {
+        List<Posts> listPosts = postsService.listAll();
+        Users user = Authorization.getInstance().getUser();
+        Boolean isAdmin = user.getIsAdmin() == 1;
+        model.addAttribute("postForm", new PostForm());
+        model.addAttribute("listPosts", listPosts);
+        model.addAttribute("isAdmin", isAdmin);
+        model.addAttribute("noposts", listPosts.size() == 0 ? "Статьи не найдены" : "");
+        return "posts";
+    }
+
     @PostMapping("/save-user")
     public String saveUser(@ModelAttribute("user") Users user) {
+        if (user.getIsAdmin() == null) {
+            user.setIsAdmin(0);
+        }
         userService.save(user);
         return "redirect:users/1";
+    }
+
+    @PostMapping("/save-post")
+    public String savePost(@ModelAttribute("postForm") PostForm postForm) {
+        Posts post = new Posts();
+        Users user = Authorization.getInstance().getUser();
+        post.setUser(user);
+        post.setTitle(postForm.getTitle());
+        post.setText(postForm.getText());
+        postsService.save(post);
+        return "redirect:posts";
     }
 
     @PostMapping("/del-user/{id}")
@@ -188,8 +228,20 @@ public class AppControllers {
     }
 
     @PostMapping("/use-product-filter")
-    public String useProductFilter(@ModelAttribute("productFilterForm") ProductFilterForm productFilterForm) {
-        Long categoryId = productFilterForm.getCategoryId();
+    public String useProductFilter(@ModelAttribute("productForm") ProductForm productForm) {
+        String productName = productForm.getProductName();
+        Long categoryId = productForm.getCategoryId();
+        if (productName != null) {
+            Products product = productsService.getWithProductName(productName);
+            if (product != null) {
+                Long productId = product.getId();
+                if (categoryId == 0) {
+                    return "redirect:store/1/0/" + productId;
+                } else {
+                    return "redirect:store/1/" + categoryId + "/" + productId;
+                }
+            }
+        }
         if (categoryId == 0) {
             return "redirect:store/1";
         }
@@ -202,6 +254,7 @@ public class AppControllers {
         if (user != null && user.getPassword().equals(authForm.getPassword())) {
             Authorization auth = Authorization.getInstance();
             auth.setStatus(true);
+            auth.setUser(user);
             return "redirect:/";
         }
         return "redirect:login";
